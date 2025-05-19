@@ -33,6 +33,7 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        // dd($request->has('is_admin'));
         User::create([
             'name' => $request->name,
             'email' => $request->email,

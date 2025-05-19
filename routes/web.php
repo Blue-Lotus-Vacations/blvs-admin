@@ -23,10 +23,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Other admin routes
-    // Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-    // Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class);
-    // Route::resource('trips', \App\Http\Controllers\Admin\TripController::class);
-    // Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class);
+    Route::resource('trips', \App\Http\Controllers\Admin\TripController::class);
+    Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
 });
 
 require __DIR__ . '/auth.php';
