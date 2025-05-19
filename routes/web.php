@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -18,15 +19,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('users', UserController::class);
     
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Other admin routes
-    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-    Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class);
-    Route::resource('trips', \App\Http\Controllers\Admin\TripController::class);
-    Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('customers', CustomerController::class);
+    Route::resource('trips', TripController::class);
+    Route::resource('documents', DocumentController::class);
 });
 
 require __DIR__ . '/auth.php';

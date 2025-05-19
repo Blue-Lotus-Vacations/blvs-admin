@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-semibold">Users</h1>
-        <a href="{{ route('admin.users.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add User</a>
+        <a href="{{ route('users.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add User</a>
     </div>
 
     @if(session('success'))
@@ -26,8 +26,8 @@
                     <td class="p-3">{{ $user->email }}</td>
                     <td class="p-3">{{ $user->is_admin ? 'Admin' : 'Staff' }}</td>
                     <td class="p-3 flex gap-2">
-                        <a href="{{ route('admin.users.edit', $user) }}" class="text-blue-600 hover:underline">Edit</a>
-                        <form method="POST" action="{{ route('admin.users.destroy', $user) }}">
+                        <a href="{{ route('users.edit', $user) }}" class="text-blue-600 hover:underline">Edit</a>
+                        <form method="POST" action="{{ route('users.destroy', $user) }}">
                             @csrf @method('DELETE')
                             <button type="submit" onclick="return confirm('Are you sure?')" class="text-red-600 hover:underline">Delete</button>
                         </form>
