@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,13 @@ Route::middleware('auth')->group(function () {
 });
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('users', UserController::class);
+    
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Other admin routes
+    // Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    // Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class);
+    // Route::resource('trips', \App\Http\Controllers\Admin\TripController::class);
+    // Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
