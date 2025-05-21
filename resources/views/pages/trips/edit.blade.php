@@ -77,9 +77,7 @@
 
                     {{-- Already Uploaded --}}
                     @php
-
                     $docs = $trip->documents->where('type', $label);
-             
                     @endphp
 
                     @if ($docs->count())
@@ -87,14 +85,11 @@
                         @foreach ($docs as $index => $doc)
                         <li class="flex justify-between items-center">
                             <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="underline">
-                                View {{ basename($doc->file_path) }}
+                                <span class="text-blue-500">View</span> {{ basename($doc->file_path) }}
                             </a>
-                           
                         </li>
-
                         @endforeach
                     </ul>
-
                     @endif
                 </div>
                 @endforeach
