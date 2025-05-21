@@ -99,11 +99,7 @@ class TripController extends Controller
                             'type' => $type,
                             'file_path' => $path,
                         ]);
-
-
                     }
-
-
                 }
             }
         }
