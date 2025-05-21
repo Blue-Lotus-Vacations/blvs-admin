@@ -51,7 +51,7 @@ class TripController extends Controller
                     }
                 }
             }
-            
+
 
             return redirect()->route('trips.index')->with('success', 'Trip created with documents.');
         } catch (\Throwable $th) {
@@ -75,6 +75,8 @@ class TripController extends Controller
 
     public function update(Request $request, Trip $trip)
     {
+
+        $trip->load('user', 'documents');
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
@@ -88,15 +90,24 @@ class TripController extends Controller
 
         if ($request->has('documents')) {
             foreach ($request->file('documents') as $type => $files) {
-                foreach ($files as $file) {
-                    $path = $file->store('trip_documents', 'public');
-                    $trip->documents()->create([
-                        'type' => $type,
-                        'file_path' => $path,
-                    ]);
+
+                foreach ((array)$files as $file) {
+
+                    if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
+                        $path = $file->store('trip_documents', 'public');
+                        $trip->documents()->create([
+                            'type' => $type,
+                            'file_path' => $path,
+                        ]);
+
+
+                    }
+
+
                 }
             }
         }
+
 
         return redirect()->route('trips.index')->with('success', 'Trip updated successfully.');
     }

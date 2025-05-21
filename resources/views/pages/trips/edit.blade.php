@@ -2,7 +2,8 @@
     <div class="max-w-2xl mx-auto p-6 bg-white shadow rounded">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">Edit Trip</h2>
 
-        <form action="{{ route('trips.update', $trip->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+        {{-- Update Form --}}
+        <form id="trip-update-form" action="{{ route('trips.update', $trip->id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
             @csrf
             @method('PUT')
 
@@ -18,26 +19,30 @@
 
             <div>
                 <label class="block font-medium text-sm text-gray-700">Title</label>
-                <input type="text" name="title" class="mt-1 block w-full rounded border-gray-300 shadow-sm" value="{{ old('title', $trip->title) }}">
+                <input type="text" name="title" value="{{ old('title', $trip->title) }}"
+                    class="mt-1 block w-full rounded border-gray-300 shadow-sm" />
                 @error('title') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <div class="flex space-x-4">
                 <div class="w-1/2">
                     <label class="block font-medium text-sm text-gray-700">Start Date</label>
-                    <input type="date" name="start_date" class="mt-1 block w-full rounded border-gray-300 shadow-sm" value="{{ old('start_date', $trip->start_date) }}">
+                    <input type="date" name="start_date" value="{{ old('start_date', $trip->start_date) }}"
+                        class="mt-1 block w-full rounded border-gray-300 shadow-sm" />
                     @error('start_date') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
                 <div class="w-1/2">
                     <label class="block font-medium text-sm text-gray-700">End Date</label>
-                    <input type="date" name="end_date" class="mt-1 block w-full rounded border-gray-300 shadow-sm" value="{{ old('end_date', $trip->end_date) }}">
+                    <input type="date" name="end_date" value="{{ old('end_date', $trip->end_date) }}"
+                        class="mt-1 block w-full rounded border-gray-300 shadow-sm" />
                     @error('end_date') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
 
             <div>
                 <label class="block font-medium text-sm text-gray-700">Location</label>
-                <input type="text" name="location" class="mt-1 block w-full rounded border-gray-300 shadow-sm" value="{{ old('location', $trip->location) }}">
+                <input type="text" name="location" value="{{ old('location', $trip->location) }}"
+                    class="mt-1 block w-full rounded border-gray-300 shadow-sm" />
                 @error('location') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 
@@ -47,8 +52,9 @@
                 @error('description') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 
+            {{-- Document Uploads --}}
             <div class="mt-6">
-                <h3 class="text-lg font-medium mb-2">Add More Documents (optional)</h3>
+                <h3 class="text-lg font-medium mb-4">Add More Documents (optional)</h3>
 
                 @php
                 $documentTypes = [
@@ -60,48 +66,72 @@
                 'cruise_ticket' => 'Cruise Tickets',
                 'park_ticket' => 'Park Tickets',
                 ];
+                
                 @endphp
 
                 @foreach ($documentTypes as $type => $label)
-                <div class="mb-4">
+                <div class="mb-6">
                     <label class="block font-medium text-sm text-gray-700">{{ $label }}</label>
-                    <input
-                        type="file"
-                        name="documents[{{ $type }}][]"
-                        multiple
+                    <input type="file" name="documents[{{ $label }}][]" multiple
                         class="mt-1 block w-full rounded border-gray-300 shadow-sm" />
 
+                    {{-- Already Uploaded --}}
                     @php
 
                     $docs = $trip->documents->where('type', $label);
+             
                     @endphp
 
                     @if ($docs->count())
                     <ul class="mt-2 text-sm text-gray-600">
-                        @foreach ($docs as $doc)
+                        @foreach ($docs as $index => $doc)
                         <li class="flex justify-between items-center">
                             <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="underline">
                                 View {{ basename($doc->file_path) }}
                             </a>
-                            <form action="{{ route('trip-documents.destroy', $doc->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this document?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                            </form>
-
+                           
                         </li>
+
                         @endforeach
                     </ul>
+
                     @endif
                 </div>
                 @endforeach
-
             </div>
 
-            <div class="flex justify-end">
-                <a href="{{ route('trips.index') }}" class="mr-3 text-gray-600 hover:underline">Cancel</a>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update Trip</button>
+            {{-- Action Buttons --}}
+            <div class="flex justify-end pt-4">
+                <a href="{{ route('trips.index') }}" class="mr-4 text-gray-600 hover:underline">Cancel</a>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update Trip</button>
             </div>
         </form>
     </div>
+    <script>
+        document.querySelectorAll(".delete-doc-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                const form = this.closest("form");
+                if (confirm("Are you sure you want to delete this document?")) {
+                    fetch(form.action, {
+                            method: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": form.querySelector('input[name="_token"]').value,
+                                "X-Requested-With": "XMLHttpRequest",
+                                "Accept": "application/json"
+                            },
+                            body: new URLSearchParams(new FormData(form))
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                // Optionally remove the item from UI
+                                form.parentElement.remove();
+                            } else {
+                                alert("Failed to delete.");
+                            }
+                        });
+                }
+            });
+        });
+    </script>
+
 </x-app-layout>
