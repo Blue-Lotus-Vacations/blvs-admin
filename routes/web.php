@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -25,7 +24,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Other admin routes
     Route::resource('users', UserController::class);
-    Route::resource('customers', CustomerController::class);
     Route::resource('trips', TripController::class);
     Route::resource('documents', DocumentController::class);
 });

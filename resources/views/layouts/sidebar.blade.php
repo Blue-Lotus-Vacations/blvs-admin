@@ -30,15 +30,7 @@
                 </a>
             </li>
 
-            <li>
-                <a href="{{ route('customers.index') }}"
-                   class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 {{ str_starts_with($currentRoute, 'customers') ? 'bg-gray-100 font-medium' : '' }}">
-                    <svg class="w-5 h-5 mr-3 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 3a5 5 0 015 5v2h1a1 1 0 011 1v4H3v-4a1 1 0 011-1h1V8a5 5 0 015-5z" />
-                    </svg>
-                    <span>Customers</span>
-                </a>
-            </li>
+           
 
             <li>
                 <a href="{{ route('trips.index') }}"
