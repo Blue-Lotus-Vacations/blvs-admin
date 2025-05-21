@@ -14,6 +14,13 @@
     </div>
 
     <div>
+        <label class="block text-sm mb-1">Phone</label>
+        <input type="text" name="phone" value="{{ old('phone', $user->phone ?? '') }}"
+               class="w-full border-gray-300 rounded px-3 py-2">
+        @error('phone') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
+    </div>
+
+    <div>
         <label class="block text-sm mb-1">Password</label>
         <input type="password" name="password"
                class="w-full border-gray-300 rounded px-3 py-2" {{ isset($user) ? '' : 'required' }}>

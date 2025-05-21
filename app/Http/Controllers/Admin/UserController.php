@@ -37,6 +37,7 @@ class UserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'is_admin' => $request->has('is_admin'),
             'password' => Hash::make($request->password),
         ]);
@@ -65,7 +66,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $data = $request->only('name', 'email');
+        $data = $request->only('name', 'email', 'phone');
         $data['is_admin'] = $request->has('is_admin');
 
         if ($request->password) {
