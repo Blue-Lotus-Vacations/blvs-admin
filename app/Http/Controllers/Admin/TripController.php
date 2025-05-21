@@ -62,4 +62,12 @@ class TripController extends Controller
 
         return redirect()->route('trips.index')->with('success', 'Trip updated successfully.');
     }
+
+    public function destroy(Trip $trip)
+    {
+        $trip->delete();
+        return redirect()->route('trips.index')->with('success', 'Trip deleted successfully.');
+    }
+
+    
 }
