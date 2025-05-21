@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\TripController;
+use App\Http\Controllers\Admin\TripDocumentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +28,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('trips', TripController::class);
     Route::resource('documents', DocumentController::class);
+    Route::delete('/admin/trip-documents/{id}', [TripDocumentController::class, 'destroy'])->name('trip-documents.destroy');
+
+
 });
 
 require __DIR__ . '/auth.php';
