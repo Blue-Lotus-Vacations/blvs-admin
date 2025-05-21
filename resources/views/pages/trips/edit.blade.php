@@ -1,0 +1,57 @@
+<x-app-layout>
+<div class="max-w-2xl mx-auto p-6 bg-white shadow rounded">
+    <h2 class="text-xl font-semibold mb-4 text-gray-800">Edit Trip</h2>
+
+    <form action="{{ route('trips.update', $trip->id) }}" method="POST" class="space-y-5">
+        @csrf
+        @method('PUT')
+
+        <div>
+            <label class="block font-medium text-sm text-gray-700">User</label>
+            <select name="user_id" class="mt-1 block w-full rounded border-gray-300 shadow-sm">
+                @foreach($users as $id => $name)
+                    <option value="{{ $id }}" {{ $trip->user_id == $id ? 'selected' : '' }}>{{ $name }}</option>
+                @endforeach
+            </select>
+            @error('user_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+        </div>
+
+        <div>
+            <label class="block font-medium text-sm text-gray-700">Title</label>
+            <input type="text" name="title" class="mt-1 block w-full rounded border-gray-300 shadow-sm" value="{{ old('title', $trip->title) }}">
+            @error('title') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="flex space-x-4">
+            <div class="w-1/2">
+                <label class="block font-medium text-sm text-gray-700">Start Date</label>
+                <input type="date" name="start_date" class="mt-1 block w-full rounded border-gray-300 shadow-sm" value="{{ old('start_date', $trip->start_date) }}">
+                @error('start_date') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+            <div class="w-1/2">
+                <label class="block font-medium text-sm text-gray-700">End Date</label>
+                <input type="date" name="end_date" class="mt-1 block w-full rounded border-gray-300 shadow-sm" value="{{ old('end_date', $trip->end_date) }}">
+                @error('end_date') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+        </div>
+
+        <div>
+            <label class="block font-medium text-sm text-gray-700">Location</label>
+            <input type="text" name="location" class="mt-1 block w-full rounded border-gray-300 shadow-sm" value="{{ old('location', $trip->location) }}">
+            @error('location') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+        </div>
+
+        <div>
+            <label class="block font-medium text-sm text-gray-700">Description (optional)</label>
+            <textarea name="description" class="mt-1 block w-full rounded border-gray-300 shadow-sm">{{ old('description', $trip->description) }}</textarea>
+            @error('description') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="flex justify-end">
+            <a href="{{ route('trips.index') }}" class="mr-3 text-gray-600 hover:underline">Cancel</a>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update Trip</button>
+        </div>
+    </form>
+</div>
+
+</x-app-layout>
