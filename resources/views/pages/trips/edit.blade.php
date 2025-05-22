@@ -52,48 +52,7 @@
                 @error('description') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 
-            {{-- Document Uploads --}}
-            <div class="mt-6">
-                <h3 class="text-lg font-medium mb-4">Add More Documents (optional)</h3>
-
-                @php
-                $documentTypes = [
-                'flight_ticket' => 'Flight Tickets',
-                'excursion_voucher' => 'Excursion Vouchers',
-                'hotel_voucher' => 'Hotel Vouchers',
-                'transfer_voucher' => 'Transfer Vouchers',
-                'railway_ticket' => 'Railway Tickets',
-                'cruise_ticket' => 'Cruise Tickets',
-                'park_ticket' => 'Park Tickets',
-                ];
-                
-                @endphp
-
-                @foreach ($documentTypes as $type => $label)
-                <div class="mb-6">
-                    <label class="block font-medium text-sm text-gray-700">{{ $label }}</label>
-                    <input type="file" name="documents[{{ $label }}][]" multiple
-                        class="mt-1 block w-full rounded border-gray-300 shadow-sm" />
-
-                    {{-- Already Uploaded --}}
-                    @php
-                    $docs = $trip->documents->where('type', $label);
-                    @endphp
-
-                    @if ($docs->count())
-                    <ul class="mt-2 text-sm text-gray-600">
-                        @foreach ($docs as $index => $doc)
-                        <li class="flex justify-between items-center">
-                            <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="underline">
-                                <span class="text-blue-500">View</span> {{ basename($doc->file_path) }}
-                            </a>
-                        </li>
-                        @endforeach
-                    </ul>
-                    @endif
-                </div>
-                @endforeach
-            </div>
+      
 
             {{-- Action Buttons --}}
             <div class="flex justify-end pt-4">

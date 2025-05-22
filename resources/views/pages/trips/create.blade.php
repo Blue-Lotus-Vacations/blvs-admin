@@ -46,34 +46,7 @@
                 @error('description') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 
-            <div class="mt-6">
-                <h3 class="text-lg font-medium mb-2">Trip Documents</h3>
-
-                @php
-                $documentTypes = [
-                'flight_ticket' => 'Flight Tickets',
-                'excursion_voucher' => 'Excursion Vouchers',
-                'hotel_voucher' => 'Hotel Vouchers',
-                'transfer_voucher' => 'Transfer Vouchers',
-                'railway_ticket' => 'Railway Tickets',
-                'cruise_ticket' => 'Cruise Tickets',
-                'park_ticket' => 'Park Tickets',
-                ];
-                @endphp
-
-                @foreach ($documentTypes as $type)
-                <label class="block font-medium text-sm text-gray-700">{{ ucfirst(str_replace('_', ' ', $type)) }}</label>
-                <input
-                    type="file"
-                    name="documents[{{ $type }}][]"
-                    multiple
-                    class="mt-1 block w-full rounded border-gray-300 shadow-sm" />
-                @endforeach
-
-            </div>
-
-
-
+           
             <div class="flex justify-end">
                 <a href="{{ route('trips.index') }}" class="mr-3 text-gray-600 hover:underline">Cancel</a>
                 <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Create Trip</button>
