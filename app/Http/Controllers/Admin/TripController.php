@@ -20,6 +20,8 @@ class TripController extends Controller
         return view('pages.trips.create', compact('users'));
     }
 
+   
+
     public function store(Request $request)
     {
 
@@ -32,25 +34,11 @@ class TripController extends Controller
                 'end_date' => 'required|date',
                 'location' => 'nullable|string',
                 'description' => 'nullable|string',
-                'documents' => 'array',
             ]);
 
             $trip = Trip::create($validated);
 
-            // Handle documents
-            if ($request->has('documents')) {
-                foreach ($request->file('documents') as $type => $files) {
-                    foreach ((array) $files as $file) {
-                        if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
-                            $path = $file->store('trip_documents', 'public');
-                            $trip->documents()->create([
-                                'type' => $type,
-                                'file_path' => $path,
-                            ]);
-                        }
-                    }
-                }
-            }
+         
 
 
             return redirect()->route('trips.index')->with('success', 'Trip created with documents.');

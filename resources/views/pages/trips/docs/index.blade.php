@@ -2,8 +2,8 @@
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-gray-800">Trips</h1>
-            <a href="{{ route('trips.create') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                + New Trip
+            <a href="{{ route('trips.documents.create' , $trip ) }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                + Upload New Document
             </a>
         </div>
 
@@ -17,26 +17,22 @@
             <table class="min-w-full table-auto">
                 <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
                     <tr>
-                        <th class="px-6 py-3">#</th>
-                        <th class="px-6 py-3">Title</th>
-                        <th class="px-6 py-3">User</th>
-                        <th class="px-6 py-3">Start Date</th>
-                        <th class="px-6 py-3">End Date</th>
+                        <th class="px-6 py-3">Name</th>
+                        <th class="px-6 py-3">Description</th>
+                        <th class="px-6 py-3">File Type</th>
                         <th class="px-6 py-3 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-gray-100">
-                    @foreach($trips as $trip)
+                    @foreach($trip->documents as $tripdoc)
                     <tr>
-                        <td class="px-6 py-4">{{ $trip->id }}</td>
-                        <td class="px-6 py-4">{{ $trip->title }}</td>
-                        <td class="px-6 py-4">{{ $trip->user->name }}</td>
-                        <td class="px-6 py-4">{{ $trip->start_date }}</td>
-                        <td class="px-6 py-4">{{ $trip->end_date }}</td>
+                        <td class="px-6 py-4">{{ $tripdoc->name }}</td>
+                        <td class="px-6 py-4">{{ $tripdoc->description }}</td>
+                        <td class="px-6 py-4">{{ $tripdoc->type }}</td>
                         <td class="px-6 py-4 text-right">
-                            <a href="{{ route('trips.docs', $trip) }}" class="text-green-600 hover:underline mr-3">Docs</a>
+                            <a href="{{ route('trips.docs', $trip) }}" class="text-green-600 hover:underline mr-3">view</a>
 
-                            <a href="{{ route('trips.edit', $trip) }}" class="text-blue-600 hover:underline mr-3">Edit</a>
+                            <a href="{{ route('trips.documents.edit',[ $trip ,$tripdoc]) }}" class="text-blue-600 hover:underline mr-3">Edit</a>
                             <form action="{{ route('trips.destroy', $trip) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?')">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="text-red-600 hover:underline">Delete</button>
@@ -45,17 +41,13 @@
                     </tr>
                     @endforeach
 
-                    @if($trips->isEmpty())
+                    @if($trip->documents->isEmpty())
                     <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">No trips found.</td>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">No Docs found.</td>
                     </tr>
                     @endif
                 </tbody>
             </table>
-        </div>
-
-        <div class="mt-4">
-            {{ $trips->links() }}
         </div>
     </div>
 </x-app-layout>
