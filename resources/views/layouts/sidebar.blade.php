@@ -43,16 +43,6 @@
             </li>
 
             <li>
-                <a href="{{ route('documents.index') }}"
-                   class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 {{ str_starts_with($currentRoute, 'documents') ? 'bg-gray-100 font-medium' : '' }}">
-                    <svg class="w-5 h-5 mr-3 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M4 3a1 1 0 011-1h6l4 4v10a1 1 0 01-1 1H5a1 1 0 01-1-1z" />
-                    </svg>
-                    <span>Documents</span>
-                </a>
-            </li>
-
-            <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"

@@ -20,8 +20,8 @@
 
             <!-- Logo -->
             <a href="{{ route('dashboard') }}" class="flex items-center">
-                <img src="/logo.svg" class="h-8 mr-2" alt="BLOVA Logo">
-                <span class="text-xl font-semibold">BLOVA Admin</span>
+                <img src="{{ asset('assets/logo.png') }}" class="h-8 mr-2" alt="BLVS Admin">
+                <span class="text-xl font-semibold">BLVS Admin Panel</span>
             </a>
         </div>
 
