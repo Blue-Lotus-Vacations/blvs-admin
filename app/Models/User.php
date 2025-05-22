@@ -49,10 +49,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function trips()
+    public function trip()
     {
-        return $this->hasMany(Trip::class);
+        return $this->hasOne(Trip::class);
     }
+
     public function isAdmin()
     {
         return $this->is_admin;

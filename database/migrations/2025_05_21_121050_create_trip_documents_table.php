@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('trip_id')->constrained()->onDelete('cascade');
             $table->string('type'); // e.g., flight_ticket, hotel_voucher
+            $table->string('name'); // e.g., flight_ticket.pdf
+            $table->string('description')->nullable(); // e.g., flight ticket for John Doe
             $table->string('file_path');
             $table->timestamps();
         });
