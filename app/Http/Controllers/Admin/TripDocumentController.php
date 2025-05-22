@@ -17,6 +17,11 @@ class TripDocumentController extends Controller
         return view('pages.trips.docs.index', compact('trip'));
     }
 
+    public function show(Trip $trip, TripDocument $document)
+    {
+        return view('pages.trips.docs.show', compact('trip', 'document'));
+    }
+
     public function create(Request $request, Trip $trip)
     {
         return view('pages.trips.docs.create', compact('trip'));

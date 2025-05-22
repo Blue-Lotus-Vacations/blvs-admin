@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Trips</h1>
+            <h1 class="text-2xl font-bold text-gray-800">Documents </h1>
             <a href="{{ route('trips.documents.create' , $trip ) }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 + Upload New Document
             </a>
@@ -30,10 +30,10 @@
                         <td class="px-6 py-4">{{ $tripdoc->description }}</td>
                         <td class="px-6 py-4">{{ $tripdoc->type }}</td>
                         <td class="px-6 py-4 text-right">
-                            <a href="{{ route('trips.docs', $trip) }}" class="text-green-600 hover:underline mr-3">view</a>
+                            <a href="{{ route('trips.documents.show', [$trip , $tripdoc]) }}" class="text-green-600 hover:underline mr-3">view</a>
 
                             <a href="{{ route('trips.documents.edit',[ $trip ,$tripdoc]) }}" class="text-blue-600 hover:underline mr-3">Edit</a>
-                            <form action="{{ route('trips.destroy', $trip) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?')">
+                            <form action="{{ route('trip.documents.destroy', $tripdoc->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure?')">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="text-red-600 hover:underline">Delete</button>
                             </form>

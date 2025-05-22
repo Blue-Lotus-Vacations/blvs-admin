@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Trip;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TripController extends Controller
@@ -55,7 +56,7 @@ class TripController extends Controller
 
     public function edit(Trip $trip)
     {
-        $users = \App\Models\User::pluck('name', 'id');
+        $users = User::pluck('name', 'id');
         $trip->load('user', 'documents');
 
         return view('pages.trips.edit', compact('trip', 'users'));
@@ -64,7 +65,7 @@ class TripController extends Controller
     public function update(Request $request, Trip $trip)
     {
 
-        $trip->load('user', 'documents');
+        $trip->load('user');
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
@@ -75,22 +76,6 @@ class TripController extends Controller
         ]);
 
         $trip->update($request->all());
-
-        if ($request->has('documents')) {
-            foreach ($request->file('documents') as $type => $files) {
-
-                foreach ((array)$files as $file) {
-
-                    if ($file instanceof \Illuminate\Http\UploadedFile && $file->isValid()) {
-                        $path = $file->store('trip_documents', 'public');
-                        $trip->documents()->create([
-                            'type' => $type,
-                            'file_path' => $path,
-                        ]);
-                    }
-                }
-            }
-        }
 
 
         return redirect()->route('trips.index')->with('success', 'Trip updated successfully.');

@@ -32,7 +32,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/trips/{trip}/documents', [TripDocumentController::class, 'store'])->name('trips.documents.store');
     Route::get('/trips/{trip}/documents/{document}/edit', [TripDocumentController::class, 'edit'])->name('trips.documents.edit');
     Route::put('/trips/{trip}/documents/{document}', [TripDocumentController::class, 'update'])->name('trips.documents.update');
-    Route::delete('/admin/trip-documents/{id}', [TripDocumentController::class, 'destroy'])->name('trip-documents.destroy');
+    Route::delete('/trips/documents/{id}', [TripDocumentController::class, 'destroy'])->name('trip.documents.destroy');
+    Route::get('/trips/{trip}/documents/{document}', [TripDocumentController::class, 'show'])->name('trips.documents.show');
     Route::resource('documents', DocumentController::class);
 
 
