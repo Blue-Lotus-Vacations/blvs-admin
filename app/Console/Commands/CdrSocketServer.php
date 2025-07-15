@@ -1,7 +1,5 @@
 <?php
 
-// app/Console/Commands/CdrSocketServer.php
-
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -28,40 +26,45 @@ class CdrSocketServer extends Command
         while ($conn = @stream_socket_accept($server)) {
             $line = trim(fgets($conn));
             fclose($conn);
+
+            if (empty($line)) continue;
+
             $this->warn("🔍 Raw data: " . $line);
 
             $fields = str_getcsv($line);
 
+            // Pad array to ensure 27 keys exist (fill missing ones with null)
+            $fields = array_pad($fields, 27, null);
 
             try {
                 CallLog::create([
-                    'historyid'            => $fields[0] ?? null,
-                    'callid'               => $fields[1] ?? null,
-                    'duration'             => $fields[2] ?? null,
-                    'time_start'           => $fields[3] ?? null,
-                    'time_answered'        => $fields[4] ?? null,
-                    'time_end'             => $fields[5] ?? null,
-                    'reason_terminated'    => $fields[6] ?? null,
-                    'from_no'              => isset($fields[7]) ?? null,
-                    'to_no'                => $fields[8] ?? null,
-                    'from_dn'              => $fields[9] ?? null,
-                    'to_dn'                => $fields[10] ?? null,
-                    'dial_no'              => $fields[11] ?? null,
-                    'reason_changed'       => $fields[12] ?? null,
-                    'final_number'         => $fields[13] ?? null,
-                    'final_dn'             => $fields[14] ?? null,
-                    'bill_code'            => $fields[15] ?? null,
-                    'bill_rate'            => $fields[16] ?? null,
-                    'bill_cost'            => $fields[17] ?? null,
-                    'bill_name'            => $fields[18] ?? null,
-                    'chain'                => $fields[19] ?? null,
-                    'from_type'            => $fields[20] ?? null,
-                    'to_type'              => $fields[21] ?? null,
-                    'final_type'           => $fields[22] ?? null,
-                    'from_dispname'        => $fields[23] ?? null,
-                    'to_dispname'          => $fields[24] ?? null,
-                    'final_dispname'       => $fields[25] ?? null,
-                    'missed_queue_calls'   => $fields[26] ?? null,
+                    'historyid'           => $fields[0],
+                    'callid'              => $fields[1],
+                    'duration'            => $fields[2],
+                    'time_start'          => $fields[3],
+                    'time_answered'       => $fields[4],
+                    'time_end'            => $fields[5],
+                    'reason_terminated'   => $fields[6],
+                    'from_no'             => $fields[7],
+                    'to_no'               => $fields[8],
+                    'from_dn'             => $fields[9],
+                    'to_dn'               => $fields[10],
+                    'dial_no'             => $fields[11],
+                    'reason_changed'      => $fields[12],
+                    'final_number'        => $fields[13],
+                    'final_dn'            => $fields[14],
+                    'bill_code'           => $fields[15],
+                    'bill_rate'           => $fields[16],
+                    'bill_cost'           => $fields[17],
+                    'bill_name'           => $fields[18],
+                    'chain'               => $fields[19],
+                    'from_type'           => $fields[20],
+                    'to_type'             => $fields[21],
+                    'final_type'          => $fields[22],
+                    'from_dispname'       => $fields[23],
+                    'to_dispname'         => $fields[24],
+                    'final_dispname'      => $fields[25],
+                    'missed_queue_calls'  => $fields[26],
                 ]);
 
                 $this->info("✅ Call saved: {$fields[7]} → {$fields[8]}");
