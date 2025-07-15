@@ -1,10 +1,11 @@
 <?php
 
+// app/Console/Commands/CdrSocketServer.php
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\CallLog;
-use Illuminate\Support\Carbon;
 
 class CdrSocketServer extends Command
 {
@@ -27,23 +28,45 @@ class CdrSocketServer extends Command
         while ($conn = @stream_socket_accept($server)) {
             $line = trim(fgets($conn));
             fclose($conn);
+            $this->warn("🔍 Raw data: " . $line);
 
             $fields = str_getcsv($line);
-            if (count($fields) < 9) continue;
 
-            [$id, $direction, $caller, $callee, $ext, $start, $answer, $end, $reason] = $fields;
 
-            if ($reason === 'NoAnswer') {
+            try {
                 CallLog::create([
-                    'caller_number' => $caller,
-                    'agent_extension' => $ext,
-                    'missed_at' => Carbon::createFromFormat('d/m/Y H:i:s', $end, 'UTC'),
-                    'status' => 'missed',
+                    'historyid'            => $fields[0] ?? null,
+                    'callid'               => $fields[1] ?? null,
+                    'duration'             => $fields[2] ?? null,
+                    'time_start'           => $fields[3] ?? null,
+                    'time_answered'        => $fields[4] ?? null,
+                    'time_end'             => $fields[5] ?? null,
+                    'reason_terminated'    => $fields[6] ?? null,
+                    'from_no'              => isset($fields[7]) ?? null,
+                    'to_no'                => $fields[8] ?? null,
+                    'from_dn'              => $fields[9] ?? null,
+                    'to_dn'                => $fields[10] ?? null,
+                    'dial_no'              => $fields[11] ?? null,
+                    'reason_changed'       => $fields[12] ?? null,
+                    'final_number'         => $fields[13] ?? null,
+                    'final_dn'             => $fields[14] ?? null,
+                    'bill_code'            => $fields[15] ?? null,
+                    'bill_rate'            => $fields[16] ?? null,
+                    'bill_cost'            => $fields[17] ?? null,
+                    'bill_name'            => $fields[18] ?? null,
+                    'chain'                => $fields[19] ?? null,
+                    'from_type'            => $fields[20] ?? null,
+                    'to_type'              => $fields[21] ?? null,
+                    'final_type'           => $fields[22] ?? null,
+                    'from_dispname'        => $fields[23] ?? null,
+                    'to_dispname'          => $fields[24] ?? null,
+                    'final_dispname'       => $fields[25] ?? null,
+                    'missed_queue_calls'   => $fields[26] ?? null,
                 ]);
 
-                $this->info("✅ Missed call logged from $caller → $ext");
-            } else {
-                $this->info("ℹ️ Call ended with reason: $reason");
+                $this->info("✅ Call saved: {$fields[7]} → {$fields[8]}");
+            } catch (\Exception $e) {
+                $this->error("❌ Error saving call: " . $e->getMessage());
             }
         }
     }
