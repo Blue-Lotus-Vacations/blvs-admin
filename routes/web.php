@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\TripController;
 use App\Http\Controllers\Admin\TripDocumentController;
+use App\Http\Controllers\CallLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,7 +36,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/trips/documents/{id}', [TripDocumentController::class, 'destroy'])->name('trip.documents.destroy');
     Route::get('/trips/{trip}/documents/{document}', [TripDocumentController::class, 'show'])->name('trips.documents.show');
 
-
+    Route::get('/call-logs', [CallLogController::class, 'index'])->name('call-logs.index');
 
 });
 
