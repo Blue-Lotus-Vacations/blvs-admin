@@ -1,7 +1,9 @@
+@include('layouts.navigation')
 <aside
-    id="drawer-navigation"
-    class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-white border-r border-gray-200 md:translate-x-0"
-    aria-label="Sidebar">
+    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+    class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 bg-white border-r border-gray-200
+           transition-transform duration-300 ease-in-out"
+    x-cloak>
     <div class="h-full px-4 py-6 overflow-y-auto bg-white">
         <ul class="space-y-2">
 
