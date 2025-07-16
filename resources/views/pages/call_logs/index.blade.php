@@ -25,7 +25,7 @@
                     @forelse ($logs as $log)
                     <tr @class([ 'px-4 py-2' , 'bg-red-50'=> !empty($log->missed_queue_calls)])>
                         <td class="px-4 py-3 whitespace-nowrap">{{ $log->from_no }}</td>
-                        <td class="px-4 py-3 whitespace-nowrap">{{ $log->to_no }} - {{ $log->to_dispname }}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">{{ $log->to_no }} - {{ $log->final_dispname }}</td>
                         <td class="px-4 py-3 whitespace-nowrap">{{ $log->time_start }}</td>
                         <td class="px-4 py-3 whitespace-nowrap">{{ $log->time_end }}</td>
                         <td class="px-4 py-3 whitespace-nowrap">{{ $log->reason_terminated ?? '-' }}</td>
