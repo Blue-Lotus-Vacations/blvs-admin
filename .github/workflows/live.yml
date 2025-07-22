@@ -1,0 +1,38 @@
+on:
+  push:
+    branches:
+      - main
+name: Deploy to the Production Environment on main Branch
+jobs:
+  web-deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v2
+
+    - name: Use Production env
+      run: cp env.production .env
+        
+    - name: Install vendors
+      run: |
+          composer install --prefer-dist --no-dev --optimize-autoloader
+          rm -rf node_modules package-lock.json
+          npm install
+          npm run build
+          npm ci --no-optional
+          php artisan cache:clear
+          php artisan route:clear
+          php artisan view:clear
+
+    - name: Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      with:
+        server: 162.240.172.35
+        username: live@admin.blvs.uk
+        password: Ovindu@12
+        timeout_minutes : 1
+        max_attempts : 3
+
+    - name: Check website status
+      run: curl -I https://admin.blvs.uk
