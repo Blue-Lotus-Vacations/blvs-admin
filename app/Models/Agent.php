@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Agent extends Model
 {
-    protected $fillable = ['name', 'folder_count', 'profit', 'trend'];
+    protected $fillable = ['name', 'folder_count', 'profit'];
 
 }

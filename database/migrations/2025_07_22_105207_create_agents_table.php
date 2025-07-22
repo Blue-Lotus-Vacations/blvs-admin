@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedInteger('folder_count')->default(0);
-            $table->unsignedInteger('profit')->default(0); // stored in pence
-            $table->enum('trend', ['up', 'down', 'stable'])->nullable();
+            $table->unsignedInteger('profit')->default(0);
             $table->timestamps();
         });
         
