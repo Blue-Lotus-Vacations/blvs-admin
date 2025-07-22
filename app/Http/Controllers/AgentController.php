@@ -21,9 +21,8 @@ class AgentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'folder_count' => 'required|integer|min:0',
-            'profit' => 'required|integer|min:0',
-            'trend' => 'nullable|in:up,down,stable',
+            'folder_count' => 'nullable|integer|min:0',
+            'profit' => 'nullable|integer|min:0',
         ]);
 
         Agent::create($request->all());
@@ -40,9 +39,8 @@ class AgentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'folder_count' => 'required|integer|min:0',
-            'profit' => 'required|integer|min:0',
-            'trend' => 'nullable|in:up,down,stable',
+            'folder_count' => 'nullable|integer|min:0',
+            'profit' => 'nullable|integer|min:0',
         ]);
 
         $agent->update($request->all());

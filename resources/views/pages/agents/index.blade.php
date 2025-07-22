@@ -17,7 +17,6 @@
                     <th class="p-2 text-left">Agent</th>
                     <th class="p-2 text-left">Folder Count</th>
                     <th class="p-2 text-left">Profit (in £)</th>
-                    <th class="p-2 text-left">Trend</th>
                     <th class="p-2">Actions</th>
                 </tr>
             </thead>
@@ -27,7 +26,6 @@
                         <td class="p-2">{{ $agent->name }}</td>
                         <td class="p-2">{{ $agent->folder_count }}</td>
                         <td class="p-2">£{{ number_format($agent->profit / 100, 2) }}</td>
-                        <td class="p-2 capitalize">{{ $agent->trend ?? 'stable' }}</td>
                         <td class="p-2 flex gap-2">
                             <a href="{{ route('agents.edit', $agent) }}" class="text-blue-600 hover:underline">Edit</a>
                             <form action="{{ route('agents.destroy', $agent) }}" method="POST" onsubmit="return confirm('Delete this agent?');">
