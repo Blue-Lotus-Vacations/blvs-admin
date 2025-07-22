@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\TripDocumentApiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserApiController;
@@ -22,3 +23,5 @@ Route::middleware('auth:sanctum')->get('/validate-token', function () {
 //Get Documents by type
 Route::middleware('auth:sanctum')->get('/customer/documents', [TripDocumentApiController::class, 'getDocumentsByType']);
 
+Route::get('/dashboard/agents', [DashboardController::class, 'agents']);
+Route::get('/dashboard/quotes', [DashboardController::class, 'quotes']);

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\TripController;
 use App\Http\Controllers\Admin\TripDocumentController;
+use App\Http\Controllers\AgentController;
 use App\Http\Controllers\CallLogController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,7 +38,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/trips/{trip}/documents/{document}', [TripDocumentController::class, 'show'])->name('trips.documents.show');
 
     Route::get('/call-logs', [CallLogController::class, 'index'])->name('call-logs.index');
-
+    Route::resource('agents', AgentController::class)->except(['show']);
 });
 
 require __DIR__ . '/auth.php';
