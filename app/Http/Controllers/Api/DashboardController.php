@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Agent;
 use App\Models\Quote;
+use App\Models\StatSliderImage;
 
 class DashboardController extends Controller
 {
@@ -34,6 +35,17 @@ class DashboardController extends Controller
         $quotes = Quote::pluck('text');
 
         return response()->json(['quotes' => $quotes], 200, [
+            'Access-Control-Allow-Origin' => '*',
+        ]);
+    }
+
+    public function statSliderImages()
+    {
+        $images = StatSliderImage::select('id', 'url', 'alt', 'overlay_text as overlayText')->get();
+
+        return response()->json([
+            'images' => $images
+        ], 200, [
             'Access-Control-Allow-Origin' => '*',
         ]);
     }
