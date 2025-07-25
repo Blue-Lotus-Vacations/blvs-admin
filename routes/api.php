@@ -23,5 +23,7 @@ Route::middleware('auth:sanctum')->get('/validate-token', function () {
 //Get Documents by type
 Route::middleware('auth:sanctum')->get('/customer/documents', [TripDocumentApiController::class, 'getDocumentsByType']);
 
+// Stat Dashboard 
 Route::get('/dashboard/agents', [DashboardController::class, 'agents']);
 Route::get('/dashboard/quotes', [DashboardController::class, 'quotes']);
+Route::get('/dashboard/images', [DashboardController::class, 'statSliderImages']);
