@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Agent;
 use App\Models\Quote;
 use App\Models\StatSliderImage;
+use App\Models\TopRanker;
 use Illuminate\Support\Facades\URL;
 
 class DashboardController extends Controller
@@ -37,12 +38,13 @@ class DashboardController extends Controller
             return [
                 'id' => $quote->id,
                 'text' => $quote->text,
-                'backgroundImage' => $quote->backgroundImage 
+                'backgroundImage' => $quote->backgroundImage
                     ? URL::to($quote->backgroundImage)
                     : null,
+                'textColor' => $quote->textColor ?? '#ffffff',
             ];
         });
-    
+
         return response()->json([
             'quotes' => $quotes
         ], 200, [
@@ -58,6 +60,43 @@ class DashboardController extends Controller
             'images' => $images
         ], 200, [
             'Access-Control-Allow-Origin' => '*',
+        ]);
+    }
+
+    public function topRankers()
+    {
+        $top = TopRanker::orderBy('global_rank')->limit(5)->get()->map(function ($r) {
+            return [
+                'agent' => $r->agent,
+                'folderCount' => $r->folder_count,
+                'profit' => $r->profit,
+                'trend' => $r->trend,
+                'globalRank' => $r->global_rank,
+                'image' => $r->image ? url($r->image) : null,
+            ];
+        });
+
+        return response()->json([
+            'title' => '🏆 Top Performers',
+            'subtitle' => 'Outstanding Results This Month', // You can change this manually
+            'agents' => $top
+        ]);
+    }
+
+    public function topFolders()
+    {
+        return response()->json([
+            'title' => '📁 Top Folders',
+            'subtitle' => 'Most Active Agents This Month',
+            'agents' => \App\Models\TopFolder::orderBy('global_rank')->limit(5)->get()->map(function ($r) {
+                return [
+                    'agent' => $r->agent,
+                    'folderCount' => $r->folder_count,
+                    'trend' => $r->trend,
+                    'globalRank' => $r->global_rank,
+                    'image' => $r->image ? asset('storage/' . $r->image) : null,
+                ];
+            }),
         ]);
     }
 }
