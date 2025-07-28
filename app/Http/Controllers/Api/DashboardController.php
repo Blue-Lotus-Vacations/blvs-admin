@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Agent;
 use App\Models\Quote;
 use App\Models\StatSliderImage;
+use Illuminate\Support\Facades\URL;
 
 class DashboardController extends Controller
 {
@@ -32,9 +33,19 @@ class DashboardController extends Controller
 
     public function quotes()
     {
-        $quotes = Quote::pluck('text');
-
-        return response()->json(['quotes' => $quotes], 200, [
+        $quotes = Quote::select('id', 'text', 'backgroundImage')->get()->map(function ($quote) {
+            return [
+                'id' => $quote->id,
+                'text' => $quote->text,
+                'backgroundImage' => $quote->backgroundImage 
+                    ? URL::to($quote->backgroundImage)
+                    : null,
+            ];
+        });
+    
+        return response()->json([
+            'quotes' => $quotes
+        ], 200, [
             'Access-Control-Allow-Origin' => '*',
         ]);
     }

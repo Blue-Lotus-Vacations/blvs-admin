@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Quote;
@@ -19,8 +20,21 @@ class QuoteController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['text' => 'required|string|max:500']);
-        Quote::create($request->only('text'));
+        $request->validate([
+            'text' => 'required|string|max:500',
+            'backgroundImage' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        $path = null;
+
+        if ($request->hasFile('backgroundImage')) {
+            $path = $request->file('backgroundImage')->store('quote-backgrounds', 'public');
+        }
+
+        Quote::create([
+            'text' => $request->input('text'),
+            'backgroundImage' => $path ? '/storage/' . $path : null,
+        ]);
 
         return redirect()->route('quotes.index')->with('success', 'Quote added successfully.');
     }
@@ -32,8 +46,23 @@ class QuoteController extends Controller
 
     public function update(Request $request, Quote $quote)
     {
-        $request->validate(['text' => 'required|string|max:500']);
-        $quote->update($request->only('text'));
+        $request->validate([
+            'text' => 'required|string|max:500',
+            'backgroundImage' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        if ($request->hasFile('backgroundImage')) {
+            // delete old file if exists
+            if ($quote->backgroundImage && file_exists(public_path($quote->backgroundImage))) {
+                unlink(public_path($quote->backgroundImage));
+            }
+
+            $path = $request->file('backgroundImage')->store('quote-backgrounds', 'public');
+            $quote->backgroundImage = '/storage/' . $path;
+        }
+
+        $quote->text = $request->input('text');
+        $quote->save();
 
         return redirect()->route('quotes.index')->with('success', 'Quote updated.');
     }
