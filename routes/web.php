@@ -9,6 +9,8 @@ use App\Http\Controllers\AgentController;
 use App\Http\Controllers\CallLogController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\StatSliderImageController;
+use App\Http\Controllers\TopFolderController;
+use App\Http\Controllers\TopRankerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,8 +44,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/call-logs', [CallLogController::class, 'index'])->name('call-logs.index');
     Route::resource('agents', AgentController::class)->except(['show']);
     Route::resource('quotes', QuoteController::class)->except(['show']);
+    Route::resource('top-rankers', TopRankerController::class);
+    Route::resource('top-folders', TopFolderController::class);
+
+
 
     Route::resource('stat-slider-images', StatSliderImageController::class);
+    
 
 
 });
