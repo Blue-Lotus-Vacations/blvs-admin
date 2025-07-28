@@ -13,12 +13,12 @@ class TopFolderController extends Controller
     public function index()
     {
         $topFolders = TopFolder::orderBy('global_rank')->get();
-        return view('pages.top-folders.index', compact('topFolders'));
+        return view('pages.top_folders.index', compact('topFolders'));
     }
 
     public function create()
     {
-        return view('pages.top-folders.create');
+        return view('pages.top_folders.create');
     }
 
     public function store(Request $request)
@@ -41,7 +41,7 @@ class TopFolderController extends Controller
 
     public function edit(TopFolder $topFolder)
     {
-        return view('pages.top-folders.edit', compact('topFolder'));
+        return view('pages.top_folders.edit', compact('topFolder'));
     }
 
     public function update(Request $request, TopFolder $topFolder)
