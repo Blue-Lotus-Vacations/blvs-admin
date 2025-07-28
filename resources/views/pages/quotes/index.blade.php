@@ -6,33 +6,44 @@
         </div>
 
         @if (session('success'))
-            <div class="mb-4 bg-green-100 text-green-800 px-4 py-2 rounded">
-                {{ session('success') }}
-            </div>
+        <div class="mb-4 bg-green-100 text-green-800 px-4 py-2 rounded">
+            {{ session('success') }}
+        </div>
         @endif
 
         <table class="w-full table-auto border text-sm">
             <thead class="bg-gray-100">
                 <tr>
                     <th class="p-2 text-left">Quote</th>
+                    <th class="p-2 text-left">Background Image</th>
                     <th class="p-2 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($quotes as $quote)
-                    <tr class="border-t">
-                        <td class="p-2 text-gray-800">{{ $quote->text }}</td>
-                        <td class="p-2 text-center">
-                            <a href="{{ route('quotes.edit', $quote) }}" class="text-blue-600 hover:underline mr-4">Edit</a>
-                            <form action="{{ route('quotes.destroy', $quote) }}" method="POST" class="inline-block" onsubmit="return confirm('Delete this quote?');">
-                                @csrf @method('DELETE')
-                                <button class="text-red-600 hover:underline">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+                <tr class="border-t">
+                    <td class="p-2 text-gray-800">{{ $quote->text }}</td>
+
+                    <td class="p-2">
+                        @if ($quote->backgroundImage)
+                        <img src="{{ $quote->backgroundImage }}" alt="Background" class="h-20 w-auto rounded shadow" />
+                        @else
+                        <span class="text-gray-400 italic">No image</span>
+                        @endif
+                    </td>
+
+                    <td class="p-2 text-center">
+                        <a href="{{ route('quotes.edit', $quote) }}" class="text-blue-600 hover:underline mr-4">Edit</a>
+                        <form action="{{ route('quotes.destroy', $quote) }}" method="POST" class="inline-block" onsubmit="return confirm('Delete this quote?');">
+                            @csrf @method('DELETE')
+                            <button class="text-red-600 hover:underline">Delete</button>
+                        </form>
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
+
 
         <div class="mt-4">{{ $quotes->links() }}</div>
     </div>
