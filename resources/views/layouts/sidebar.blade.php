@@ -74,7 +74,15 @@
                 </a>
             </li>
 
-
+<li>
+                <a href="{{ route('top-folders.index') }}"
+                    class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 {{ str_starts_with($currentRoute, 'trips') ? 'bg-gray-100 font-medium' : '' }}">
+                    <svg class="w-5 h-5 mr-3 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a8 8 0 108 8 8 8 0 00-8-8zm-3 9V9h6v2z" />
+                    </svg>
+                    <span>Top Folders</span>
+                </a>
+            </li>
             <li>
                 <a href="{{ route('quotes.index') }}"
                     class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 {{ str_starts_with($currentRoute, 'trips') ? 'bg-gray-100 font-medium' : '' }}">
