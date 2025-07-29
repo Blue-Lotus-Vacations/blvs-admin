@@ -77,7 +77,7 @@ class DashboardController extends Controller
         });
 
         return response()->json([
-            'title' => ' Top Performers',
+            'title' => ' Top Performers for the Month of June',
             'subtitle' => 'Outstanding Results This Month', // You can change this manually
             'agents' => $top
         ]);
@@ -86,7 +86,7 @@ class DashboardController extends Controller
     public function topFolders()
     {
         return response()->json([
-            'title' => ' Top Folders',
+            'title' => ' Top Folders for the Month of June',
             'subtitle' => 'Most Active Agents This Month',
             'agents' => \App\Models\TopFolder::orderBy('global_rank')->limit(5)->get()->map(function ($r) {
                 return [
