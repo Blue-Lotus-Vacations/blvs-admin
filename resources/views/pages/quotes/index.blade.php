@@ -26,11 +26,25 @@
 
                     <td class="p-2">
                         @if ($quote->backgroundImage)
-                        <img src="{{ $quote->backgroundImage }}" alt="Background" class="h-20 w-auto rounded shadow" />
+                        @php
+                        $path = public_path(parse_url($quote->backgroundImage, PHP_URL_PATH));
+                        $sizeKB = file_exists($path) ? round(filesize($path) / 1024, 2) : null;
+                        @endphp
+
+                        <div class="flex items-center space-x-2">
+                            @if ($sizeKB)
+                            <span class="text-xs text-gray-500">{{ $sizeKB }} KB</span>
+                            @else
+                            <span class="text-xs text-red-500 italic">Size unknown</span>
+                            @endif
+
+                            <img src="{{ $quote->backgroundImage }}" alt="Background" class="h-20 w-auto rounded shadow" />
+                        </div>
                         @else
                         <span class="text-gray-400 italic">No image</span>
                         @endif
                     </td>
+
 
                     <td class="p-2 text-center">
                         <a href="{{ route('quotes.edit', $quote) }}" class="text-blue-600 hover:underline mr-4">Edit</a>
