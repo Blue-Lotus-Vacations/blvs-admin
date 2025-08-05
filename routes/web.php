@@ -50,10 +50,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::patch('agent-stats/{id}/inline', [AgentStatsController::class, 'inline'])->name('agent-stats.inline');
     
     Route::resource('quotes', QuoteController::class)->except(['show']);
-    Route::resource('top-rankers', TopRankerController::class);
-    Route::resource('top-folders', TopFolderController::class);
-
-
 
     Route::resource('stat-slider-images', StatSliderImageController::class);
 });
