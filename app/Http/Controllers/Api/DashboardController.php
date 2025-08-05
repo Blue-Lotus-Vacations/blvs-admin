@@ -181,4 +181,22 @@ class DashboardController extends Controller
             'agents' => $top
         ]);
     }
+
+
+    public function topFolders()
+    {
+        return response()->json([
+            'title' => ' Jan - Jul Top Folder Conversions',
+            'subtitle' => 'Most Active Agents This Month',
+            'agents' => \App\Models\TopFolder::orderBy('global_rank')->limit(5)->get()->map(function ($r) {
+                return [
+                    'agent' => $r->agent,
+                    'folderCount' => $r->folder_count,
+                    'trend' => $r->trend,
+                    'globalRank' => $r->global_rank,
+                    'image' => $r->image ? asset('storage/' . $r->image) : null,
+                ];
+            }),
+        ]);
+    }
 }
