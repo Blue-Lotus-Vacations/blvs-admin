@@ -30,5 +30,5 @@ Route::get('/dashboard/images', [DashboardController::class, 'statSliderImages']
 Route::get('/dashboard/top-rankers', [DashboardController::class, 'topRankers']);
 
 // routes/api.php
-Route::get('/dashboard/top-folders', [DashboardController::class, 'topFolders']);//jan to last month top 5 folder conversions
-Route::get('/dashboard/total-profit', [DashboardController::class, 'totalProfit']);//jan to july top 5 profits 
+Route::get('/dashboard/top-folders', [DashboardController::class, 'topFolders']);
+Route::get('/dashboard/total-profit', [DashboardController::class, 'topProfitLeaders']);//jan to july top 5 profits 

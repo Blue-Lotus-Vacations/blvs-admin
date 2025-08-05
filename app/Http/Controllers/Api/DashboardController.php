@@ -124,11 +124,15 @@ class DashboardController extends Controller
 
     public function topFolders()
     {
-        // Always last month (YYYY-MM)
-        $month = Carbon::now()->subMonth()->format('Y-m');
+        // Get the last month available in data
+        $month = AgentStats::max('month') ?? Carbon::now()->subMonth()->format('Y-m');
         $monthName = Carbon::createFromFormat('Y-m', $month)->format('F');
 
-        // Top 5 by folder_count (tie-breaker: profit desc, then agent name)
+        // Get first month for range title
+        $firstMonth = AgentStats::min('month') ?? $month;
+        $firstMonthName = Carbon::createFromFormat('Y-m', $firstMonth)->format('M');
+
+        // Query top 5 folders from last month
         $rows = AgentStats::query()
             ->where('agent_stats.month', $month)
             ->join('agents', 'agents.id', '=', 'agent_stats.agent_id')
@@ -149,37 +153,57 @@ class DashboardController extends Controller
                 'agent'       => $r->agent,
                 'folderCount' => (int) $r->folder_count,
                 'globalRank'  => $i + 1,
-                // if you store relative paths in agents.image (e.g. "avatars/a.jpg")
-                // this matches your original asset('storage/...') style:
                 'image'       => $r->image ? url($r->image) : null,
             ];
         });
 
         return response()->json([
-            'title'    => " {$monthName} Top Folders",
-            'subtitle' => "Most Active Agents for Month {$monthName}",
+            'title'    => "{$firstMonthName} to {$monthName} Top 5 Folders",
+            'subtitle' => "Most Active Agents from {$firstMonthName} to {$monthName}",
             'agents'   => $agents,
         ]);
     }
 
-    public function totalProfit()
+    public function topProfitLeaders()
     {
-        $top = TopRanker::orderBy('global_rank')->limit(5)->get()->map(function ($r) {
+        // Range: January (current year) to last month (YYYY-MM)
+        $lastMonth = Carbon::now()->subMonth();
+        $startMonth = Carbon::now()->startOfYear(); // Jan 1 of current year
+
+        $start = $startMonth->format('Y-m');     // e.g. 2025-01
+        $end   = $lastMonth->format('Y-m');      // e.g. 2025-07
+
+        // Aggregate totals per agent within the range
+        $rows = AgentStats::query()
+            ->join('agents', 'agents.id', '=', 'agent_stats.agent_id')
+            ->whereBetween('agent_stats.month', [$start, $end]) // months stored as 'YYYY-MM'
+            ->groupBy('agents.id', 'agents.name', 'agents.image')
+            ->select([
+                'agents.name as agent',
+                'agents.image as image',
+                DB::raw('COALESCE(SUM(agent_stats.profit), 0) as total_profit'),
+                DB::raw('COALESCE(SUM(agent_stats.folder_count), 0) as total_folders'),
+            ])
+            ->orderByDesc('total_profit')
+            ->orderBy('agents.name')
+            ->limit(5)
+            ->get();
+
+        // Build payload with rank and image URL
+        $agents = $rows->values()->map(function ($r, $i) {
             return [
-                'agent' => $r->agent,
-                'folderCount' => $r->folder_count,
-                'profit' => $r->profit,
-                'trend' => $r->trend,
-                'globalRank' => $r->global_rank,
-                'image' => $r->image ? url($r->image) : null,
+                'agent'       => $r->agent,
+                'profit'      => (float) $r->total_profit,
+                'folderCount' => (int) $r->total_folders,
+                'image'       => $r->image ? url($r->image) : null, // adjust if you store relative paths
+                'rank'        => $i + 1,
             ];
         });
 
         return response()->json([
-            'title' => ' June Top Performers',
-            'subtitle' => 'Outstanding Results for June Month', // You can change this manually
-            'agents' => $top
+            'title'    => 'Total Profit Leaders',
+            'subtitle' => 'Top performing agents by total profit',
+            'agents'   => $agents,
         ]);
     }
-
 }
