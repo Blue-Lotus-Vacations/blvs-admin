@@ -11,7 +11,7 @@ class AgentStatsController extends Controller
 {
     public function index(Request $request)
     {
-        $q = AgentStats::query()
+        $stats = AgentStats::query()
             ->with('agent')
             ->when(
                 $request->filled('agent'),
@@ -28,12 +28,12 @@ class AgentStatsController extends Controller
                 $query->where('month', $request->month)
             )
             ->orderByDesc('month')
-            ->orderBy('agent_id');
-
-        $stats = $q->paginate(15)->withQueryString();
+            ->orderBy('agent_id')
+            ->get(); // 🔁 removed ->paginate()
 
         return view('pages.agentStats.index', compact('stats'));
     }
+
 
     public function create()
     {

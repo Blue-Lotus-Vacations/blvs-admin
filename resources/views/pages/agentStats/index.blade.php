@@ -87,9 +87,6 @@
             </table>
         </div>
 
-        <div class="mt-4">
-            {{ $stats->links() }}
-        </div>
     </div>
 
     {{-- Alpine helper --}}
