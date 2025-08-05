@@ -151,7 +151,7 @@ class DashboardController extends Controller
                 'globalRank'  => $i + 1,
                 // if you store relative paths in agents.image (e.g. "avatars/a.jpg")
                 // this matches your original asset('storage/...') style:
-                'image'       => $r->image ? asset('storage/' . ltrim($r->image, '/')) : null,
+                'image'       => $r->image ? url($r->image) : null,
             ];
         });
 
