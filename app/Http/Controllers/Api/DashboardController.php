@@ -185,6 +185,9 @@ class DashboardController extends Controller
         $start = $startMonth->format('Y-m');     // e.g. 2025-01
         $end   = $lastMonth->format('Y-m');      // e.g. 2025-07
 
+        $startLabel = $startMonth->format('M');            // Jan 2025
+        $endLabel   = $lastMonth->format('M');
+
         // Aggregate totals per agent within the range
         $rows = AgentStats::query()
             ->join('agents', 'agents.id', '=', 'agent_stats.agent_id')
@@ -213,7 +216,7 @@ class DashboardController extends Controller
         });
 
         return response()->json([
-            'title'    => "{$startMonth} to {$lastMonth} Top 5 Profit Leaders",
+            'title'    => "{$startLabel} to {$endLabel} Top 5 Profit Leaders",
             'subtitle' => 'Top performing agents by total profit',
             'agents'   => $agents,
         ]);
