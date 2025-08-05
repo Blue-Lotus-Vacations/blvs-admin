@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('agents', function (Blueprint $table) {
+        Schema::create('agent_stats', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('image')->nullable(); // Optional image for the agent
+            $table->string('month')->comment('Month in YYYY-MM format');
+            $table->unsignedInteger('folder_count')->default(0);
+            $table->unsignedInteger('profit')->default(0);
+            $table->foreignId('agent_id')->constrained('agents')->onDelete('cascade');
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('agents');
+        Schema::dropIfExists('agent_stats');
     }
 };

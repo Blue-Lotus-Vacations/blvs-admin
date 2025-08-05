@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Agent extends Model
 {
-    protected $fillable = ['name', 'folder_count', 'profit'];
+    protected $fillable = ['name', 'image'];
 
+    public function stats()
+    {
+        return $this->hasMany(AgentStats::class);
+    }
 }
