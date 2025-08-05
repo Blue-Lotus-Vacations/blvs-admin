@@ -201,7 +201,7 @@ class DashboardController extends Controller
         });
 
         return response()->json([
-            'title'    => 'Total Profit Leaders',
+            'title'    => "{$startMonth} to {$lastMonth} Top 5 Profit Leaders",
             'subtitle' => 'Top performing agents by total profit',
             'agents'   => $agents,
         ]);
