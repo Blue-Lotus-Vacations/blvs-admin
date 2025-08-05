@@ -124,15 +124,27 @@ class DashboardController extends Controller
 
     public function topFolders()
     {
-        // Get the last month available in data
-        $month = AgentStats::max('month') ?? Carbon::now()->subMonth()->format('Y-m');
-        $monthName = Carbon::createFromFormat('Y-m', $month)->format('F');
+        // Last month relative to "now"
+        $lastMonthCap = Carbon::now()->subMonth()->format('Y-m');
 
-        // Get first month for range title
-        $firstMonth = AgentStats::min('month') ?? $month;
-        $firstMonthName = Carbon::createFromFormat('Y-m', $firstMonth)->format('M');
+        // Latest month in data that is <= last month (exclude current month)
+        $month = AgentStats::where('month', '<=', $lastMonthCap)->max('month');
 
-        // Query top 5 folders from last month
+        if (!$month) {
+            return response()->json([
+                'title'    => 'Top 5 Folders',
+                'subtitle' => 'No data available (excluding current month)',
+                'agents'   => [],
+            ]);
+        }
+
+        // First available month up to that same cap (for the left side of the range)
+        $firstMonth = AgentStats::where('month', '<=', $month)->min('month');
+
+        $monthName      = Carbon::createFromFormat('Y-m', $month)->format('F'); // e.g., "July"
+        $firstMonthName = Carbon::createFromFormat('Y-m', $firstMonth)->format('M'); // e.g., "Jan"
+
+        // Query top 5 for that month
         $rows = AgentStats::query()
             ->where('agent_stats.month', $month)
             ->join('agents', 'agents.id', '=', 'agent_stats.agent_id')
@@ -153,7 +165,7 @@ class DashboardController extends Controller
                 'agent'       => $r->agent,
                 'folderCount' => (int) $r->folder_count,
                 'globalRank'  => $i + 1,
-                'image'       => $r->image ? url($r->image) : null,
+                'image'       => $r->image ? url($r->image) : null, // or asset('storage/' . ltrim($r->image, '/'))
             ];
         });
 
