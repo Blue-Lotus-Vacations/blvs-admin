@@ -11,6 +11,9 @@ class AgentStatsController extends Controller
 {
     public function index(Request $request)
     {
+        if (!$request->filled('month')) {
+            $request->merge(['month' => now()->format('Y-m')]);
+        }
         $stats = AgentStats::query()
             ->with('agent')
             ->when(
