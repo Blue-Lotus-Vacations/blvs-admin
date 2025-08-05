@@ -1,17 +1,17 @@
 @csrf
+@php $agent = $agent ?? null; @endphp
+
 <div class="mb-4">
     <label class="block text-sm font-medium">Agent Name</label>
     <input type="text" name="name" value="{{ old('name', $agent->name ?? '') }}" class="w-full border p-2 rounded" required>
 </div>
 
 <div class="mb-4">
-    <label class="block text-sm font-medium">Folder Count</label>
-    <input type="number" name="folder_count" value="{{ old('folder_count', $agent->folder_count ?? 0) }}" class="w-full border p-2 rounded" >
-</div>
-
-<div class="mb-4">
-    <label class="block text-sm font-medium">Profit (in pence)</label>
-    <input type="number" name="profit" value="{{ old('profit', $agent->profit ?? 0) }}" class="w-full border p-2 rounded" >
+    <label class="block text-sm font-medium">Agent Image</label>
+    <input type="file" name="image" class="w-full border p-2 rounded">
+    @if($agent && $agent->image)
+        <img src="{{ $agent->image }}" class="mt-2 h-20 rounded">
+    @endif
 </div>
 
 

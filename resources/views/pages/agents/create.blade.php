@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="p-6">
         <h2 class="text-xl font-bold mb-4">Add New Agent</h2>
-        <form method="POST" action="{{ route('agents.store') }}">
+        <form method="POST" action="{{ route('agents.store') }}" enctype="multipart/form-data">
             @include('pages.agents.form')
         </form>
     </div>

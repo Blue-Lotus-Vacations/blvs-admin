@@ -15,8 +15,7 @@
             <thead class="bg-gray-100">
                 <tr>
                     <th class="p-2 text-left">Agent</th>
-                    <th class="p-2 text-left">Folder Count</th>
-                    <th class="p-2 text-left">Profit (in £)</th>
+                    <th class="p-2 text-left">Image</th>
                     <th class="p-2">Actions</th>
                 </tr>
             </thead>
@@ -24,8 +23,13 @@
                 @foreach ($agents as $agent)
                     <tr class="border-t">
                         <td class="p-2">{{ $agent->name }}</td>
-                        <td class="p-2">{{ $agent->folder_count }}</td>
-                        <td class="p-2">£{{ number_format($agent->profit) }}</td>
+                        <td class="p-2">
+                        @if ($agent->image)
+                            <img src="{{ $agent->image }}" class="h-16 rounded" />
+                        @else
+                            <span class="text-gray-400 italic">No image</span>
+                        @endif
+                        </td>
                         <td class="p-2 flex gap-2">
                             <a href="{{ route('agents.edit', $agent) }}" class="text-blue-600 hover:underline">Edit</a>
                             <form action="{{ route('agents.destroy', $agent) }}" method="POST" onsubmit="return confirm('Delete this agent?');">
@@ -37,7 +41,5 @@
                 @endforeach
             </tbody>
         </table>
-
-        <div class="mt-4">{{ $agents->links() }}</div>
     </div>
 </x-app-layout>

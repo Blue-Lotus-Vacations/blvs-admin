@@ -8,7 +8,7 @@ class AgentController extends Controller
 {
     public function index()
     {
-        $agents = Agent::latest()->paginate(10);
+        $agents = Agent::all();
         return view('pages.agents.index', compact('agents'));
     }
 
@@ -21,11 +21,14 @@ class AgentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'folder_count' => 'nullable|integer|min:0',
-            'profit' => 'nullable|integer|min:0',
+            'image' => 'nullable',
         ]);
 
-        Agent::create($request->all());
+        $data['name'] = $request->input(['name']);
+        if ($request->hasFile('image')) {
+            $data['image'] = '/storage/' . $request->file('image')->store('agents', 'public');
+        }
+        Agent::create($data);
 
         return redirect()->route('agents.index')->with('success', 'Agent created successfully.');
     }
@@ -39,11 +42,18 @@ class AgentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'folder_count' => 'nullable|integer|min:0',
-            'profit' => 'nullable|integer|min:0',
+            'image' => 'nullable',
         ]);
 
-        $agent->update($request->all());
+        $data['name'] = $request->input(['name']);
+        if ($request->hasFile('image')) {
+            if ($agent->image && file_exists(public_path($agent->image))) {
+                unlink(public_path($agent->image));
+            }
+            $data['image'] = '/storage/' . $request->file('image')->store('agents', 'public');
+        }
+
+        $agent->update($data);
 
         return redirect()->route('agents.index')->with('success', 'Agent updated successfully.');
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\TripController;
 use App\Http\Controllers\Admin\TripDocumentController;
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\AgentStatsController;
 use App\Http\Controllers\CallLogController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\StatSliderImageController;
@@ -28,7 +29,7 @@ Route::middleware('auth')->group(function () {
 });
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('users', UserController::class);
-    
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Other admin routes
     Route::resource('users', UserController::class);
@@ -42,7 +43,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/trips/{trip}/documents/{document}', [TripDocumentController::class, 'show'])->name('trips.documents.show');
 
     Route::get('/call-logs', [CallLogController::class, 'index'])->name('call-logs.index');
+    
     Route::resource('agents', AgentController::class)->except(['show']);
+   
+    Route::resource('agent-stats', AgentStatsController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    Route::patch('agent-stats/{id}/inline', [AgentStatsController::class, 'inline'])->name('agent-stats.inline');
+    
     Route::resource('quotes', QuoteController::class)->except(['show']);
     Route::resource('top-rankers', TopRankerController::class);
     Route::resource('top-folders', TopFolderController::class);
@@ -50,9 +56,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
 
     Route::resource('stat-slider-images', StatSliderImageController::class);
-    
-
-
 });
 
 require __DIR__ . '/auth.php';

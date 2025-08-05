@@ -24,10 +24,11 @@ Route::middleware('auth:sanctum')->get('/validate-token', function () {
 Route::middleware('auth:sanctum')->get('/customer/documents', [TripDocumentApiController::class, 'getDocumentsByType']);
 
 // Stat Dashboard 
-Route::get('/dashboard/agents', [DashboardController::class, 'agents']);
+Route::get('/dashboard/agents', [DashboardController::class, 'agentStats']);
 Route::get('/dashboard/quotes', [DashboardController::class, 'quotes']);
 Route::get('/dashboard/images', [DashboardController::class, 'statSliderImages']);
 Route::get('/dashboard/top-rankers', [DashboardController::class, 'topRankers']);
 
 // routes/api.php
 Route::get('/dashboard/top-folders', [DashboardController::class, 'topFolders']);
+Route::get('/dashboard/total-profit', [DashboardController::class, 'totalProfit']);
