@@ -124,38 +124,26 @@ class DashboardController extends Controller
 
     public function topFolders()
     {
-        // Last month relative to "now"
-        $lastMonthCap = Carbon::now()->subMonth()->format('Y-m');
+        // Define date range: from Jan 1st this year to last full month
+        $startMonth = Carbon::now()->startOfYear()->format('Y-m');       // e.g. 2025-01
+        $lastMonth  = Carbon::now()->subMonth()->format('Y-m');          // e.g. 2025-07
 
-        // Latest month in data that is <= last month (exclude current month)
-        $month = AgentStats::where('month', '<=', $lastMonthCap)->max('month');
+        $startLabel = Carbon::createFromFormat('Y-m', $startMonth)->format('M');
+        $endLabel   = Carbon::createFromFormat('Y-m', $lastMonth)->format('F');
 
-        if (!$month) {
-            return response()->json([
-                'title'    => 'Top 5 Folders',
-                'subtitle' => 'No data available (excluding current month)',
-                'agents'   => [],
-            ]);
-        }
-
-        // First available month up to that same cap (for the left side of the range)
-        $firstMonth = AgentStats::where('month', '<=', $month)->min('month');
-
-        $monthName      = Carbon::createFromFormat('Y-m', $month)->format('F'); // e.g., "July"
-        $firstMonthName = Carbon::createFromFormat('Y-m', $firstMonth)->format('M'); // e.g., "Jan"
-
-        // Query top 5 for that month
+        // Aggregate total folder counts (and profit for tie-breaking) across the date range
         $rows = AgentStats::query()
-            ->where('agent_stats.month', $month)
+            ->whereBetween('month', [$startMonth, $lastMonth])
             ->join('agents', 'agents.id', '=', 'agent_stats.agent_id')
+            ->groupBy('agents.id', 'agents.name', 'agents.image')
             ->select([
                 'agents.name as agent',
                 'agents.image as image',
-                'agent_stats.folder_count',
-                DB::raw('COALESCE(agent_stats.profit, 0) as profit'),
+                DB::raw('SUM(agent_stats.folder_count) as total_folders'),
+                DB::raw('SUM(agent_stats.profit) as total_profit'),
             ])
-            ->orderByDesc('agent_stats.folder_count')
-            ->orderByDesc('agent_stats.profit')
+            ->orderByDesc('total_folders')
+            ->orderByDesc('total_profit')
             ->orderBy('agents.name')
             ->limit(5)
             ->get();
@@ -163,15 +151,15 @@ class DashboardController extends Controller
         $agents = $rows->values()->map(function ($r, $i) {
             return [
                 'agent'       => $r->agent,
-                'folderCount' => (int) $r->folder_count,
+                'folderCount' => (int) $r->total_folders,
                 'globalRank'  => $i + 1,
-                'image'       => $r->image ? url($r->image) : null, // or asset('storage/' . ltrim($r->image, '/'))
+                'image'       => $r->image ? url($r->image) : null,
             ];
         });
 
         return response()->json([
-            'title'    => "{$firstMonthName} to {$monthName} Top 5 Folders",
-            'subtitle' => "Most Active Agents from {$firstMonthName} to {$monthName}",
+            'title'    => "{$startLabel} to {$endLabel} Folder Conversions",
+            'subtitle' => "Most Active Agents from {$startLabel} to {$endLabel}",
             'agents'   => $agents,
         ]);
     }
