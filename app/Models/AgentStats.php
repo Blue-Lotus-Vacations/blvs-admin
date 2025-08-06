@@ -11,6 +11,7 @@ class AgentStats extends Model
         'folder_count',
         'profit',
         'agent_id',
+        'leads',
     ];
 
     public function agent()

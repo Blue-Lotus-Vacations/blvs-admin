@@ -209,4 +209,44 @@ class DashboardController extends Controller
             'agents'   => $agents,
         ]);
     }
+
+    public function conversionRatio()
+    {
+        // Use LAST month
+        $month = Carbon::now()->subMonth()->format('Y-m');
+        $monthName = Carbon::createFromFormat('Y-m', $month)->format('F');
+
+        // Fetch leads and conversions for last month
+        $rows = DB::table('agent_stats')
+            ->join('agents', 'agents.id', '=', 'agent_stats.agent_id')
+            ->where('agent_stats.month', $month)
+            ->select([
+                'agents.name as agent',
+                'agent_stats.leads',
+                'agent_stats.folder_count as conversions', // Assuming folder_count means "converted folders"
+                DB::raw('ROUND((agent_stats.folder_count / NULLIF(agent_stats.leads, 0)) * 100, 1) as conversion_ratio')
+            ])
+            ->orderByDesc('conversion_ratio')
+            ->orderByDesc('conversions')
+            ->orderBy('agents.name')
+            ->limit(5)
+            ->get();
+
+        // Add global rank
+        $agents = $rows->values()->map(function ($row, $index) {
+            return [
+                'agent'           => $row->agent,
+                'leads'           => (int) $row->leads,
+                'conversions'     => (int) $row->conversions,
+                'conversionRatio' => (float) $row->conversion_ratio,
+                'globalRank'      => $index + 1,
+            ];
+        });
+
+        return response()->json([
+            'title'    => "Conversion Ratio % - {$monthName}",
+            'subtitle' => "Monthly Performance Rankings",
+            'agents'   => $agents,
+        ]);
+    }
 }
