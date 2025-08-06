@@ -28,6 +28,7 @@ Route::get('/dashboard/agents', [DashboardController::class, 'agentStats']);
 Route::get('/dashboard/quotes', [DashboardController::class, 'quotes']);
 Route::get('/dashboard/images', [DashboardController::class, 'statSliderImages']);
 Route::get('/dashboard/top-rankers', [DashboardController::class, 'topRankers']);
+Route::get('/dashboard/conversion-ratio', [DashboardController::class, 'conversionRatio']);
 
 // routes/api.php
 Route::get('/dashboard/top-folders', [DashboardController::class, 'topFolders']);
