@@ -158,7 +158,7 @@ class DashboardController extends Controller
         });
 
         return response()->json([
-            'title'    => "{$startLabel} to {$endLabel} Top 5 Profit Leaders",
+            'title'    => "{$startLabel} to {$endLabel} Folder Conversions",
             'subtitle' => "Most Active Agents from {$startLabel} to {$endLabel}",
             'agents'   => $agents,
         ]);
