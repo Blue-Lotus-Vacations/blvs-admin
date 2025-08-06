@@ -245,7 +245,6 @@ class DashboardController extends Controller
         ->sortByDesc('conversions')
         ->sortBy('agent')
         ->values()
-        ->take(5)
         ->map(function ($row, $index) {
             $row['globalRank'] = $index + 1;
             return $row;
