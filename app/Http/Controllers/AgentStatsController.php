@@ -130,9 +130,10 @@ class AgentStatsController extends Controller
         $data = $request->validate([
             'folder_count' => ['nullable', 'integer', 'min:0'],
             'profit'       => ['nullable', 'numeric', 'min:0'],
+            'leads'        => ['nullable', 'integer', 'min:0'],
         ]);
 
-        if (!array_key_exists('folder_count', $data) && !array_key_exists('profit', $data)) {
+        if (empty($data)) {
             return response()->json(['message' => 'No fields to update'], 422);
         }
 
@@ -140,9 +141,9 @@ class AgentStatsController extends Controller
         $record->save();
 
         return response()->json([
-            'message' => 'Saved',
             'folder_count' => $record->folder_count,
-            'profit' => $record->profit,
+            'profit'       => $record->profit,
+            'leads'        => $record->leads,
         ]);
     }
 }
