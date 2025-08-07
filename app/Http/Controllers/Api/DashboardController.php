@@ -211,49 +211,58 @@ class DashboardController extends Controller
     }
 
     public function conversionRatio()
-{
-    $month = Carbon::now()->format('Y-m');
-    $monthName = Carbon::createFromFormat('Y-m', $month)->format('F');
+    {
+        $month = Carbon::now()->subMonth()->format('Y-m');
+        $monthName = Carbon::createFromFormat('Y-m', $month)->format('F');
 
-    // Fetch all agents who have data for this month
-    $rows = DB::table('agent_stats')
-        ->join('agents', 'agents.id', '=', 'agent_stats.agent_id')
-        ->where('agent_stats.month', $month)
-        ->select([
-            'agents.name as agent',
-            'agent_stats.leads',
-            'agent_stats.folder_count as conversions',
-        ])
-        ->get();
+        // Fetch all agents who have data for this month
+        $rows = DB::table('agent_stats')
+            ->join('agents', 'agents.id', '=', 'agent_stats.agent_id')
+            ->where('agent_stats.month', $month)
+            ->select([
+                'agents.name as agent',
+                'agent_stats.leads',
+                'agent_stats.folder_count as conversions',
+            ])
+            ->get();
 
-    // Compute conversionRatio safely (including leads = 0)
-    $agents = $rows->map(function ($row) {
-        $leads = (int) $row->leads;
-        $conversions = (int) $row->conversions;
-        $ratio = $leads > 0 ? round(($conversions / $leads) * 100, 1) : 0.0;
+        // Compute conversionRatio safely (including leads = 0)
+        $agents = $rows->map(function ($row) {
+            $leads = (int) $row->leads;
+            $conversions = (int) $row->conversions;
+            $ratio = $leads > 0 ? round(($conversions / $leads) * 100, 1) : 0.0;
 
-        return [
-            'agent'           => $row->agent,
-            'leads'           => $leads,
-            'conversions'     => $conversions,
-            'conversionRatio' => $ratio,
-        ];
-    });
+            return [
+                'agent'           => $row->agent,
+                'leads'           => $leads,
+                'conversions'     => $conversions,
+                'conversionRatio' => $ratio,
+            ];
+        });
 
-    // Sort by conversionRatio DESC, then conversions DESC, then name
-    $top = $agents->sortByDesc('conversionRatio')
-        ->sortByDesc('conversions')
-        ->sortBy('agent')
-        ->values()
-        ->map(function ($row, $index) {
+        // Sort by conversionRatio DESC, then conversions DESC, then name
+        $top = $agents->sort(function ($a, $b) {
+            // Sort by conversionRatio DESC
+            if ($a['conversionRatio'] !== $b['conversionRatio']) {
+                return $b['conversionRatio'] <=> $a['conversionRatio'];
+            }
+
+            // Then by conversions DESC
+            if ($a['conversions'] !== $b['conversions']) {
+                return $b['conversions'] <=> $a['conversions'];
+            }
+
+            // Then by agent name ASC
+            return $a['agent'] <=> $b['agent'];
+        })->values()->map(function ($row, $index) {
             $row['globalRank'] = $index + 1;
             return $row;
         });
 
-    return response()->json([
-        'title'    => "Conversion Ratio % - {$monthName}",
-        'subtitle' => "Monthly Performance Rankings",
-        'agents'   => $top,
-    ]);
-}
+        return response()->json([
+            'title'    => "Conversion Ratio % - {$monthName}",
+            'subtitle' => "Monthly Performance Rankings",
+            'agents'   => $top,
+        ]);
+    }
 }
