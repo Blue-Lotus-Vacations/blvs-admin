@@ -212,7 +212,7 @@ class DashboardController extends Controller
 
     public function conversionRatio()
 {
-    $month = Carbon::now()->subMonth()->format('Y-m');
+    $month = Carbon::now()->format('Y-m');
     $monthName = Carbon::createFromFormat('Y-m', $month)->format('F');
 
     // Fetch all agents who have data for this month
