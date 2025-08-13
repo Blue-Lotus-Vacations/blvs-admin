@@ -265,4 +265,34 @@ class DashboardController extends Controller
             'agents'   => $top,
         ]);
     }
+
+    public function teamProfit()
+    {
+        // Sum profit across all agent_stats per team
+        $rows = DB::table('teams')
+            ->join('agents', 'agents.team_id', '=', 'teams.id')
+            ->join('agent_stats', 'agent_stats.agent_id', '=', 'agents.id')
+            ->select(
+                'teams.name',
+                DB::raw('SUM(agent_stats.profit) as profit'),
+                DB::raw('COUNT(DISTINCT agents.id) as members')
+            )
+            ->groupBy('teams.id', 'teams.name')
+            ->orderByDesc('profit')
+            ->get();
+
+        $teams = $rows->map(function ($team) {
+            return [
+                'name'    => $team->name,
+                'profit'  => (int) $team->profit,
+                'members' => (int) $team->members,
+            ];
+        });
+
+        return response()->json([
+            'title'    => 'Team Profit Rankings',
+            'subtitle' => 'Top performing teams by total profit',
+            'teams'    => $teams,
+        ]);
+    }
 }

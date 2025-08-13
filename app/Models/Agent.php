@@ -12,4 +12,9 @@ class Agent extends Model
     {
         return $this->hasMany(AgentStats::class);
     }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

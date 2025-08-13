@@ -33,3 +33,4 @@ Route::get('/dashboard/conversion-ratio', [DashboardController::class, 'conversi
 // routes/api.php
 Route::get('/dashboard/top-folders', [DashboardController::class, 'topFolders']);
 Route::get('/dashboard/total-profit', [DashboardController::class, 'topProfitLeaders']);//jan to july top 5 profits 
+Route::get('/dashboard/team-profit', [DashboardController::class, 'teamProfit']);

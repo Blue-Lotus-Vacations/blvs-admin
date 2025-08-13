@@ -10,6 +10,7 @@ use App\Http\Controllers\AgentStatsController;
 use App\Http\Controllers\CallLogController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\StatSliderImageController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TopFolderController;
 use App\Http\Controllers\TopRankerController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('quotes', QuoteController::class)->except(['show']);
 
     Route::resource('stat-slider-images', StatSliderImageController::class);
+
+    Route::resource('teams', TeamController::class);
+
 });
 
 require __DIR__ . '/auth.php';
