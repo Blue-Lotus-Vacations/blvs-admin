@@ -268,10 +268,13 @@ class DashboardController extends Controller
 
     public function teamProfit()
     {
-        // Sum profit across all agent_stats per team
+        // Exclude current month stats
+        $cutoff = Carbon::now()->startOfMonth()->format('Y-m'); // e.g., "2025-08"
+
         $rows = DB::table('teams')
             ->join('agents', 'agents.team_id', '=', 'teams.id')
             ->join('agent_stats', 'agent_stats.agent_id', '=', 'agents.id')
+            ->where('agent_stats.month', '<', $cutoff) // ✅ exclude current month
             ->select(
                 'teams.name',
                 DB::raw('SUM(agent_stats.profit) as profit'),
