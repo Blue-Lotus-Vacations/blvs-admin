@@ -268,13 +268,14 @@ class DashboardController extends Controller
 
     public function teamProfit()
     {
-        // Exclude current month stats
-        $cutoff = Carbon::now()->startOfMonth()->format('Y-m'); // e.g., "2025-08"
+        // Define date range: from May to end of last month
+        $startMonth = Carbon::createFromDate(null, 5, 1)->format('Y-m');        // "2025-05"
+        $endMonth   = Carbon::now()->subMonth()->format('Y-m');                // e.g., "2025-07"
 
         $rows = DB::table('teams')
             ->join('agents', 'agents.team_id', '=', 'teams.id')
             ->join('agent_stats', 'agent_stats.agent_id', '=', 'agents.id')
-            ->where('agent_stats.month', '<', $cutoff) // ✅ exclude current month
+            ->whereBetween('agent_stats.month', [$startMonth, $endMonth])
             ->select(
                 'teams.name',
                 DB::raw('SUM(agent_stats.profit) as profit'),
@@ -294,7 +295,7 @@ class DashboardController extends Controller
 
         return response()->json([
             'title'    => 'Team Profit Rankings',
-            'subtitle' => 'Top performing teams by total profit',
+            'subtitle' => 'Top performing teams by total profit (May to Last Month)',
             'teams'    => $teams,
         ]);
     }
